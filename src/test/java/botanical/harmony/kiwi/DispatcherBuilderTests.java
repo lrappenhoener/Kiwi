@@ -2,17 +2,11 @@ package botanical.harmony.kiwi;
 
 import org.junit.jupiter.api.Test;
 
-import botanical.harmony.strawberry.Container;
-import botanical.harmony.strawberry.ContainerBuilder;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DispatcherBuilderTests {
   @Test
   void correctly_knows_if_handler_is_registered() {
-
-    ContainerBuilder container;
-
     DispatcherBuilder builder = DispatcherBuilder.create();
     TestCommandHandler handler = new TestCommandHandler((c) -> {
     });
