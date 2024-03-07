@@ -22,20 +22,15 @@ public class DispatcherBuilder {
     return new DispatcherBuilder(Optional.of(provider));
   }
 
+  public Dispatcher build() {
+    return Dispatcher.create(commandHandlers, commandHandlerClasses, optionalHandlerProvider);
+  }
+
   public <TCommand extends Command> DispatcherBuilder register(
           CommandHandler<TCommand> handler) {
     Class<TCommand> commandClass = getCommandClass(handler);
     commandHandlers.put(commandClass, handler);
     return this;
-  }
-
-  public Dispatcher build() {
-    return Dispatcher.create();
-  }
-
-  public boolean hasCommandHandlerFor(Class<? extends Command> commandClass) {
-    return commandHandlers.containsKey(commandClass) || commandHandlerClasses.containsKey(
-            commandClass);
   }
 
   public <TCommand extends Command> DispatcherBuilder register(Class<? extends CommandHandler<TCommand>> handlerClass) {
@@ -44,6 +39,11 @@ public class DispatcherBuilder {
     Class<TCommand> commandClass = getCommandClass(handlerClass);
     commandHandlerClasses.put(commandClass, handlerClass);
     return this;
+  }
+
+  public boolean hasCommandHandlerFor(Class<? extends Command> commandClass) {
+    return commandHandlers.containsKey(commandClass) || commandHandlerClasses.containsKey(
+            commandClass);
   }
 
   private <TCommand extends Command> Class<TCommand> getCommandClass(
