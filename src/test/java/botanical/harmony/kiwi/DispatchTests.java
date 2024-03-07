@@ -14,7 +14,7 @@ public class DispatchTests {
     Dispatcher dispatcher = dispatcherBuilder.build();
     TestCommand command = new TestCommand(42);
 
-    CommandResponse response = dispatcher.dispatch(command);
+    CommandResponse response = dispatcher.send(command);
 
     assertFalse(response.isSuccessful());
     assertTrue(response.getMessage().contains("no handler registered"));
@@ -29,7 +29,7 @@ public class DispatchTests {
     Dispatcher dispatcher = dispatcherBuilder.build();
     TestCommand command = new TestCommand(42);
 
-    CommandResponse response = dispatcher.dispatch(command);
+    CommandResponse response = dispatcher.send(command);
 
     assertTrue(response.isSuccessful());
     assertTrue(response.getMessage().contains("Successful"));
@@ -45,7 +45,7 @@ public class DispatchTests {
     Dispatcher dispatcher = dispatcherBuilder.build();
     TestCommand command = new TestCommand(42);
 
-    CommandResponse response = dispatcher.dispatch(command);
+    CommandResponse response = dispatcher.send(command);
 
     assertTrue(response.isSuccessful());
     assertTrue(response.getMessage().contains("Successful"));
@@ -63,7 +63,7 @@ public class DispatchTests {
     Dispatcher dispatcher = dispatcherBuilder.build();
     TestCommand command = new TestCommand(42);
 
-    dispatcher.dispatch(command);
+    dispatcher.send(command);
 
     assertTrue(invoked.get());
   }
@@ -77,7 +77,7 @@ public class DispatchTests {
     Dispatcher dispatcher = dispatcherBuilder.build();
     TestCommand command = new TestCommand(42);
 
-    dispatcher.dispatch(command);
+    dispatcher.send(command);
 
     assertTrue(invoked.get());
   }

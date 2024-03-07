@@ -24,7 +24,7 @@ public class Dispatcher {
     return new Dispatcher(commandHandlers, commandHandlerClasses, optionalHandlerProvider);
   }
 
-  public CommandResponse dispatch(
+  public CommandResponse send(
           Command command) {
     Class<? extends Command> commandClass = command.getClass();
     if (commandHandlers.containsKey(commandClass)) {
