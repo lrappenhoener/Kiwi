@@ -69,7 +69,7 @@ public class DispatchTests {
   }
 
   @Test
-  void dispatching_command_with_registered_handler_instance_successful_runs_handler() {
+  void dispatching_command_with_registered_handler_instance_successful_invokes_handler() {
     AtomicBoolean invoked = new AtomicBoolean(false);
     TestCommandHandler handler = new TestCommandHandler(c -> invoked.set(true));
     DispatcherBuilder dispatcherBuilder = DispatcherBuilder.create();
