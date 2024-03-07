@@ -46,7 +46,10 @@ public class DispatcherBuilderTests {
   }
 
   @Test
-  void correctly_knows_if_handler_is_not_resolvable_by_the_provider() {
+  void correctly_knows_if_handler_class_not_registered() {
+    TestProvider testProvider = TestProvider.create();
+    DispatcherBuilder builder = DispatcherBuilder.create(testProvider);
 
+    assertFalse(builder.hasCommandHandlerFor(TestCommand.class));
   }
 }
