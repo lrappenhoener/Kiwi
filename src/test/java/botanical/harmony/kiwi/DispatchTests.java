@@ -18,9 +18,10 @@ public class DispatchTests {
     assertTrue(response.getMessage().contains("no handler registered"));
   }
   @Test
-  void dispatching_command_with_handler_returns_successful_response() {
+  void dispatching_command_with_registered_handler_instance_returns_successful_response() {
+    TestCommandHandler handler = new TestCommandHandler(c -> {});
     DispatcherBuilder dispatcherBuilder = DispatcherBuilder.create();
-    dispatcherBuilder.register(TestCommandHandler.class);
+    dispatcherBuilder.register(handler);
     Dispatcher dispatcher = dispatcherBuilder.build();
     TestCommand command = new TestCommand(42);
 
