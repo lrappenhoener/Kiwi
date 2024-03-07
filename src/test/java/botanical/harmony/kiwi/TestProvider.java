@@ -9,4 +9,9 @@ public class TestProvider implements HandlerProvider {
   public boolean canProvide(Class<?> clazz) {
     return true;
   }
+
+  @Override
+  public CommandHandler provide(Class<? extends CommandHandler<?>> commandHandlerClass) {
+    return null;
+  }
 }
