@@ -11,6 +11,6 @@ public class TestCommandHandler implements CommandHandler<TestCommand> {
   @Override
   public CommandResponse handle(TestCommand testCommand) {
     testCommandConsumer.accept(testCommand);
-    return CommandResponse.success();
+    return CommandResponse.success(testCommand);
   }
 }
