@@ -1,5 +1,6 @@
 package botanical.harmony.kiwi;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,5 +39,9 @@ public class Dispatcher {
       return commandHandler.handle(command);
     }
     return CommandResponse.failed("no handler registered");
+  }
+
+  public <T> QueryResponse<T> send(Query<T> query) {
+    return QueryResponse.failed("no handler registered");
   }
 }
