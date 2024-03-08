@@ -1,2 +1,4 @@
-package botanical.harmony.kiwi;public interface Query<T> {
+package botanical.harmony.kiwi;
+
+public interface Query<T> {
 }
