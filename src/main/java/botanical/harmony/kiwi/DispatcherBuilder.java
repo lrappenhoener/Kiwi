@@ -8,6 +8,8 @@ import java.util.Optional;
 public class DispatcherBuilder {
   private final Map<Class<? extends Command>, CommandHandler<? extends Command>> commandHandlers = new HashMap<>();
   private final Map<Class<? extends Command>, Class<? extends CommandHandler<?>>> commandHandlerClasses = new HashMap<>();
+  private final Map<Class<? extends Query>, Class<? extends QueryHandler<?, ?>>> queryHandlerClasses = new HashMap<>();
+  private final Map<Class<? extends Query>, QueryHandler> queryHandlers = new HashMap<>();
   private final Optional<HandlerProvider> optionalHandlerProvider;
 
   private DispatcherBuilder(Optional<HandlerProvider> optionalHandlerProvider) {
@@ -23,7 +25,7 @@ public class DispatcherBuilder {
   }
 
   public Dispatcher build() {
-    return Dispatcher.create(commandHandlers, commandHandlerClasses, optionalHandlerProvider);
+    return Dispatcher.create(commandHandlers, commandHandlerClasses, queryHandlers, queryHandlerClasses, optionalHandlerProvider);
   }
 
   public <TCommand extends Command> DispatcherBuilder register(
@@ -55,5 +57,17 @@ public class DispatcherBuilder {
   private <TCommand extends Command> Class<TCommand> getCommandClass(Class<? extends CommandHandler> handlerClass) {
     ParameterizedType parameterizedType = (ParameterizedType) handlerClass.getGenericInterfaces()[0];
     return (Class<TCommand>) parameterizedType.getActualTypeArguments()[0];
+  }
+
+  private <TQuery extends Command> Class<TQuery> getQueryClass(Class<? extends QueryHandler> handlerClass) {
+    ParameterizedType parameterizedType = (ParameterizedType) handlerClass.getGenericInterfaces()[0];
+    return (Class<TQuery>) parameterizedType.getActualTypeArguments()[0];
+  }
+
+  public <T extends QueryHandler> DispatcherBuilder register(T queryHandler) {
+    Class<? extends QueryHandler> clazz = queryHandler.getClass();
+    Class<? extends Query> queryClass = getQueryClass(clazz);
+    queryHandlers.put(queryClass, queryHandler);
+    return this;
   }
 }
