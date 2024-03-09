@@ -2,19 +2,35 @@ package botanical.harmony.kiwi;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class QueryDispatchTests {
   @Test
-  void send_query_without_registered_handler_returns_not_successful_response() {
+  void send_query_without_registered_handler_returns_failed_response() {
     DispatcherBuilder builder = DispatcherBuilder.create();
     Dispatcher dispatcher = builder.build();
-    Query<List<String>> query = new TestQuery(new String[]{"foo", "bar"});
+    Query<List<String>> query = new TestQuery(List.of("foo", "bar"));
 
     QueryResponse<List<String>> response = dispatcher.send(query);
 
     assertFalse(response.isSuccessful());
+  }
+
+  @Test
+  void send_query_with_registered_handler_instance_returns_successful_response(){
+    DispatcherBuilder builder = DispatcherBuilder.create();
+    builder.register(new TestQueryHandler());
+    Dispatcher dispatcher = builder.build();
+    List<String> expectedResult = List.of("foo", "bar");
+    Query<List<String>> query = new TestQuery(expectedResult);
+
+    QueryResponse<List<String>> response = dispatcher.send(query);
+
+    assertTrue(response.isSuccessful());
+    assertTrue(response.getResult().isPresent());
+    assertEquals(response.getResult().get(), expectedResult);
   }
 }
