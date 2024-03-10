@@ -1,4 +1,8 @@
-package botanical.harmony.kiwi;
+package botanical.harmony.kiwi.helper;
+
+import botanical.harmony.kiwi.CommandHandler;
+import botanical.harmony.kiwi.HandlerProvider;
+import botanical.harmony.kiwi.QueryHandler;
 
 import java.util.HashMap;
 import java.util.Map;

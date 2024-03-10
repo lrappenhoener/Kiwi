@@ -1,4 +1,6 @@
-package botanical.harmony.kiwi;
+package botanical.harmony.kiwi.helper;
+
+import botanical.harmony.kiwi.Command;
 
 public class TestCommand implements Command {
   private final int value;

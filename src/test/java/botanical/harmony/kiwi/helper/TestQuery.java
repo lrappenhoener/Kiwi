@@ -1,4 +1,6 @@
-package botanical.harmony.kiwi;
+package botanical.harmony.kiwi.helper;
+
+import botanical.harmony.kiwi.Query;
 
 import java.util.List;
 

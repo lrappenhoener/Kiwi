@@ -1,5 +1,8 @@
 package botanical.harmony.kiwi;
 
+import botanical.harmony.kiwi.helper.TestProvider;
+import botanical.harmony.kiwi.helper.TestQuery;
+import botanical.harmony.kiwi.helper.TestQueryHandler;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

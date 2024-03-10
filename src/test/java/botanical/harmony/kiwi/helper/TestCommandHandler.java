@@ -1,4 +1,7 @@
-package botanical.harmony.kiwi;
+package botanical.harmony.kiwi.helper;
+import botanical.harmony.kiwi.CommandHandler;
+import botanical.harmony.kiwi.CommandResponse;
+
 import java.util.function.Consumer;
 
 public class TestCommandHandler implements CommandHandler<TestCommand> {
