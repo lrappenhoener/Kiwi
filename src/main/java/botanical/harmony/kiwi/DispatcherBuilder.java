@@ -1,19 +1,15 @@
 package botanical.harmony.kiwi;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class DispatcherBuilder {
-  private final Map<Class<? extends Command>, CommandHandler<? extends Command>> commandHandlers = new HashMap<>();
-  private final Map<Class<? extends Command>, Class<? extends CommandHandler<?>>> commandHandlerClasses = new HashMap<>();
-  private final Map<Class<? extends Query>, Class<? extends QueryHandler<?, ?>>> queryHandlerClasses = new HashMap<>();
-  private final Map<Class<? extends Query>, QueryHandler> queryHandlers = new HashMap<>();
-  private final Optional<HandlerProvider> optionalHandlerProvider;
+  private final QueryBuilder queryBuilder;
+  private final CommandBuilder commandBuilder;
 
   private DispatcherBuilder(Optional<HandlerProvider> optionalHandlerProvider) {
-    this.optionalHandlerProvider = optionalHandlerProvider;
+    queryBuilder = QueryBuilder.create(optionalHandlerProvider);
+    commandBuilder = CommandBuilder.create(optionalHandlerProvider);
   }
 
   public static DispatcherBuilder create() {
@@ -25,49 +21,35 @@ public class DispatcherBuilder {
   }
 
   public Dispatcher build() {
-    return Dispatcher.create(commandHandlers, commandHandlerClasses, queryHandlers, queryHandlerClasses, optionalHandlerProvider);
+    CommandDispatcher commandDispatcher = commandBuilder.build();
+    QueryDispatcher queryDispatcher = queryBuilder.build();
+    return Dispatcher.create(commandDispatcher, queryDispatcher);
   }
 
-  public <TCommand extends Command> DispatcherBuilder register(
+  public <TCommand extends Command> DispatcherBuilder registerCommandHandler(
           CommandHandler<TCommand> handler) {
-    Class<TCommand> commandClass = getCommandClass(handler);
-    commandHandlers.put(commandClass, handler);
+    commandBuilder.register(handler);
     return this;
   }
 
-  public <TCommand extends Command> DispatcherBuilder register(Class<? extends CommandHandler<TCommand>> handlerClass) {
-    if (optionalHandlerProvider.isEmpty()) throw new MissingProviderException(
-            "You need to create the builder with an provider to create handler instances if you want to register by class");
-    Class<TCommand> commandClass = getCommandClass(handlerClass);
-    commandHandlerClasses.put(commandClass, handlerClass);
+  public <TCommand extends Command> DispatcherBuilder registerCommandHandler(Class<? extends CommandHandler<TCommand>> handlerClass) {
+    commandBuilder.register(handlerClass);
+    return this;
+  }
+
+  public <T extends QueryHandler> DispatcherBuilder registerQueryHandler(T queryHandler) {
+    queryBuilder.register(queryHandler);
+    return this;
+  }
+
+  public <T extends QueryHandler> DispatcherBuilder registerQueryHandler(Class<T> queryHandlerClass) {
+    queryBuilder.register(queryHandlerClass);
     return this;
   }
 
   public boolean hasCommandHandlerFor(Class<? extends Command> commandClass) {
-    return commandHandlers.containsKey(commandClass) || commandHandlerClasses.containsKey(
-            commandClass);
+   return commandBuilder.hasCommandHandlerFor(commandClass);
   }
 
-  private <TCommand extends Command> Class<TCommand> getCommandClass(
-          CommandHandler<TCommand> handler) {
-    Class<? extends CommandHandler> handlerClass = handler.getClass();
-    return getCommandClass(handlerClass);
-  }
 
-  private <TCommand extends Command> Class<TCommand> getCommandClass(Class<? extends CommandHandler> handlerClass) {
-    ParameterizedType parameterizedType = (ParameterizedType) handlerClass.getGenericInterfaces()[0];
-    return (Class<TCommand>) parameterizedType.getActualTypeArguments()[0];
-  }
-
-  private <TQuery extends Command> Class<TQuery> getQueryClass(Class<? extends QueryHandler> handlerClass) {
-    ParameterizedType parameterizedType = (ParameterizedType) handlerClass.getGenericInterfaces()[0];
-    return (Class<TQuery>) parameterizedType.getActualTypeArguments()[0];
-  }
-
-  public <T extends QueryHandler> DispatcherBuilder register(T queryHandler) {
-    Class<? extends QueryHandler> clazz = queryHandler.getClass();
-    Class<? extends Query> queryClass = getQueryClass(clazz);
-    queryHandlers.put(queryClass, queryHandler);
-    return this;
-  }
 }

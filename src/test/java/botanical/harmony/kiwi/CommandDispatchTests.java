@@ -25,7 +25,7 @@ public class CommandDispatchTests {
     TestCommandHandler handler = new TestCommandHandler(c -> {
     });
     DispatcherBuilder dispatcherBuilder = DispatcherBuilder.create();
-    dispatcherBuilder.register(handler);
+    dispatcherBuilder.registerCommandHandler(handler);
     Dispatcher dispatcher = dispatcherBuilder.build();
     TestCommand command = new TestCommand(42);
 
@@ -37,11 +37,9 @@ public class CommandDispatchTests {
 
   @Test
   void dispatching_command_with_registered_handler_class_returns_successful_response() {
-    TestProvider testProvider = new TestProvider();
-    testProvider.register(TestCommandHandler.class, () -> new TestCommandHandler(c -> {
-    }));
+    TestProvider testProvider = TestProvider.create();
     DispatcherBuilder dispatcherBuilder = DispatcherBuilder.create(testProvider);
-    dispatcherBuilder.register(TestCommandHandler.class);
+    dispatcherBuilder.registerCommandHandler(TestCommandHandler.class);
     Dispatcher dispatcher = dispatcherBuilder.build();
     TestCommand command = new TestCommand(42);
 
@@ -55,11 +53,11 @@ public class CommandDispatchTests {
   void dispatching_command_with_registered_handler_class_successful_invokes_handler() {
     AtomicBoolean invoked = new AtomicBoolean(false);
     TestProvider testProvider = new TestProvider();
-    testProvider.register(TestCommandHandler.class, () -> new TestCommandHandler(c -> {
+    testProvider.registerCommandHandler(TestCommandHandler.class, () -> new TestCommandHandler(c -> {
       invoked.set(true);
     }));
     DispatcherBuilder dispatcherBuilder = DispatcherBuilder.create(testProvider);
-    dispatcherBuilder.register(TestCommandHandler.class);
+    dispatcherBuilder.registerCommandHandler(TestCommandHandler.class);
     Dispatcher dispatcher = dispatcherBuilder.build();
     TestCommand command = new TestCommand(42);
 
@@ -73,7 +71,7 @@ public class CommandDispatchTests {
     AtomicBoolean invoked = new AtomicBoolean(false);
     TestCommandHandler handler = new TestCommandHandler(c -> invoked.set(true));
     DispatcherBuilder dispatcherBuilder = DispatcherBuilder.create();
-    dispatcherBuilder.register(handler);
+    dispatcherBuilder.registerCommandHandler(handler);
     Dispatcher dispatcher = dispatcherBuilder.build();
     TestCommand command = new TestCommand(42);
 

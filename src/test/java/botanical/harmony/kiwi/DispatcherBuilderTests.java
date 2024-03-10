@@ -10,7 +10,7 @@ public class DispatcherBuilderTests {
     DispatcherBuilder builder = DispatcherBuilder.create();
     TestCommandHandler handler = new TestCommandHandler((c) -> {
     });
-    builder.register(handler);
+    builder.registerCommandHandler(handler);
 
     assertTrue(builder.hasCommandHandlerFor(TestCommand.class));
   }
@@ -26,7 +26,7 @@ public class DispatcherBuilderTests {
   void throws_missing_provider_exception_when_trying_register_handler_class_without_provider() {
     DispatcherBuilder builder = DispatcherBuilder.create();
 
-    assertThrows(MissingProviderException.class, () -> builder.register(
+    assertThrows(MissingProviderException.class, () -> builder.registerCommandHandler(
             TestCommandHandler.class));
   }
 
@@ -34,7 +34,7 @@ public class DispatcherBuilderTests {
   void correctly_knows_if_handler_class_registered() {
     TestProvider testProvider = TestProvider.create();
     DispatcherBuilder builder = DispatcherBuilder.create(testProvider);
-    builder.register(TestCommandHandler.class);
+    builder.registerCommandHandler(TestCommandHandler.class);
 
     assertTrue(builder.hasCommandHandlerFor(TestCommand.class));
   }

@@ -8,7 +8,10 @@ public class TestProvider implements HandlerProvider {
   private final Map<Class<?>, Supplier<?>> handlerFactories = new HashMap<>();
 
   public static TestProvider create() {
-    return new TestProvider();
+    TestProvider testProvider = new TestProvider();
+    testProvider.registerCommandHandler(TestCommandHandler.class, () -> new TestCommandHandler(c -> {}) );
+    testProvider.registerQueryHandler(TestQueryHandler.class, () -> new TestQueryHandler());
+    return testProvider;
   }
 
   @Override
@@ -21,10 +24,16 @@ public class TestProvider implements HandlerProvider {
     return (T)handlerFactories.get(clazz).get();
   }
 
-  public TestProvider register(
+  public TestProvider registerCommandHandler(
           Class<?> clazz,
           Supplier<CommandHandler<?>> commandHandlerFactory) {
     handlerFactories.put(clazz, commandHandlerFactory);
+    return this;
+  }
+  public TestProvider registerQueryHandler(
+          Class<?> clazz,
+          Supplier<QueryHandler> queryHandlerFactory) {
+    handlerFactories.put(clazz, queryHandlerFactory);
     return this;
   }
 }
