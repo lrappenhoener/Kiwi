@@ -3,6 +3,7 @@ package botanical.harmony.kiwi;
 import botanical.harmony.kiwi.helper.TestProvider;
 import botanical.harmony.kiwi.helper.TestQuery;
 import botanical.harmony.kiwi.helper.TestQueryHandler;
+import botanical.harmony.kiwi.helper.ThrowingTestQueryHandler;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -108,5 +109,76 @@ public class QueryDispatchTests {
     } catch (ExecutionException | InterruptedException e) {
       assertFalse(future.isCompletedExceptionally());
     }
+  }
+
+  @Test
+  void send_async_query_with_throwing_registered_handler_class_returns_failed_response() {
+    TestProvider provider = TestProvider.create();
+    DispatcherBuilder builder = DispatcherBuilder.create(provider);
+    builder.registerQueryHandler(ThrowingTestQueryHandler.class);
+    Dispatcher dispatcher = builder.build();
+    List<String> expectedResult = List.of("foo", "bar");
+    Query<List<String>> query = new TestQuery(expectedResult);
+
+    CompletableFuture<QueryResponse<List<String>>> future = dispatcher.sendAsync(query);
+
+    try {
+      QueryResponse<List<String>> response = future.get();
+      assertFalse(response.isSuccessful());
+    } catch (ExecutionException | InterruptedException e) {
+      assertFalse(future.isCompletedExceptionally());
+    }
+  }
+
+  @Test
+  void send_query_with_throwing_registered_handler_class_returns_failed_response() {
+    TestProvider provider = TestProvider.create();
+    DispatcherBuilder builder = DispatcherBuilder.create(provider);
+    builder.registerQueryHandler(ThrowingTestQueryHandler.class);
+    Dispatcher dispatcher = builder.build();
+    List<String> expectedResult = List.of("foo", "bar");
+    Query<List<String>> query = new TestQuery(expectedResult);
+
+    CompletableFuture<QueryResponse<List<String>>> future = dispatcher.sendAsync(query);
+
+    try {
+      QueryResponse<List<String>> response = future.get();
+
+      assertFalse(response.isSuccessful());
+    } catch (ExecutionException | InterruptedException e) {
+      assertFalse(future.isCompletedExceptionally());
+    }
+  }
+
+  @Test
+  void send_async_query_with_registered_throwing_handler_instance_returns_failed_response() {
+    DispatcherBuilder builder = DispatcherBuilder.create();
+    builder.registerQueryHandler(new ThrowingTestQueryHandler());
+    Dispatcher dispatcher = builder.build();
+    List<String> expectedResult = List.of("foo", "bar");
+    Query<List<String>> query = new TestQuery(expectedResult);
+
+    CompletableFuture<QueryResponse<List<String>>> future = dispatcher.sendAsync(query);
+
+    try {
+      QueryResponse<List<String>> response = future.get();
+      assertFalse(response.isSuccessful());
+      assertTrue(response.getResult().isEmpty());
+    } catch (ExecutionException | InterruptedException e) {
+      assertFalse(future.isCompletedExceptionally());
+    }
+  }
+
+  @Test
+  void send_query_with_registered_throwing_handler_instance_returns_failed_response() {
+    DispatcherBuilder builder = DispatcherBuilder.create();
+    builder.registerQueryHandler(new ThrowingTestQueryHandler());
+    Dispatcher dispatcher = builder.build();
+    List<String> expectedResult = List.of("foo", "bar");
+    Query<List<String>> query = new TestQuery(expectedResult);
+
+    QueryResponse<List<String>> response = dispatcher.send(query);
+    assertFalse(response.isSuccessful());
+    assertTrue(response.getResult().isEmpty());
   }
 }

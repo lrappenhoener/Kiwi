@@ -3,6 +3,7 @@ package botanical.harmony.kiwi;
 import botanical.harmony.kiwi.helper.TestCommand;
 import botanical.harmony.kiwi.helper.TestCommandHandler;
 import botanical.harmony.kiwi.helper.TestProvider;
+import botanical.harmony.kiwi.helper.ThrowingTestCommandHandler;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
@@ -205,5 +206,47 @@ public class CommandDispatchTests {
     } catch (InterruptedException | ExecutionException e) {
       assertFalse(future.isCompletedExceptionally());
     }
+  }
+  @Test
+  void dispatching_command_with_throwing_handler_instance_returns_failed_response() {
+    TestCommandHandler handler = new TestCommandHandler(c -> {
+      throw new RuntimeException();
+    });
+    DispatcherBuilder dispatcherBuilder = DispatcherBuilder.create();
+    dispatcherBuilder.registerCommandHandler(handler);
+    Dispatcher dispatcher = dispatcherBuilder.build();
+    TestCommand command = new TestCommand(42);
+
+    CommandResponse response = dispatcher.send(command);
+
+    assertFalse(response.isSuccessful());
+  }
+  @Test
+  void async_dispatching_command_with_throwing_handler_class_returns_failed_response() {
+    TestProvider testProvider = TestProvider.create();
+    DispatcherBuilder dispatcherBuilder = DispatcherBuilder.create(testProvider);
+    dispatcherBuilder.registerCommandHandler(ThrowingTestCommandHandler.class);
+    Dispatcher dispatcher = dispatcherBuilder.build();
+    TestCommand command = new TestCommand(42);
+
+    CompletableFuture<CommandResponse> future = dispatcher.sendAsync(command);
+    try {
+      CommandResponse response = future.get();
+      assertFalse(response.isSuccessful());
+    } catch (InterruptedException | ExecutionException e) {
+      assertFalse(future.isCompletedExceptionally());
+    }
+  }
+  @Test
+  void dispatching_command_with_throwing_handler_class_returns_failed_response() {
+    TestProvider testProvider = TestProvider.create();
+    DispatcherBuilder dispatcherBuilder = DispatcherBuilder.create(testProvider);
+    dispatcherBuilder.registerCommandHandler(ThrowingTestCommandHandler.class);
+    Dispatcher dispatcher = dispatcherBuilder.build();
+    TestCommand command = new TestCommand(42);
+
+    CommandResponse response = dispatcher.send(command);
+
+    assertFalse(response.isSuccessful());
   }
 }

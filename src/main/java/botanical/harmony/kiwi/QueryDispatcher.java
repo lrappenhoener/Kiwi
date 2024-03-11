@@ -14,6 +14,11 @@ class QueryDispatcher {
     if (optionalQueryHandler.isEmpty())
       return QueryResponse.failed("not registered");
     QueryHandler handler = optionalQueryHandler.get();
-    return handler.handle(query);
+    try {
+      QueryResponse response = handler.handle(query);
+      return response;
+    } catch (Exception e) {
+      return QueryResponse.failed(e.toString());
+    }
   }
 }

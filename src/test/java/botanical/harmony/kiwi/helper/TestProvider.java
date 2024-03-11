@@ -14,6 +14,8 @@ public class TestProvider implements HandlerProvider {
   public static TestProvider create() {
     TestProvider testProvider = new TestProvider();
     testProvider.registerCommandHandler(TestCommandHandler.class, () -> new TestCommandHandler(c -> {}) );
+    testProvider.registerCommandHandler(ThrowingTestCommandHandler.class, () -> new ThrowingTestCommandHandler() );
+    testProvider.registerQueryHandler(ThrowingTestQueryHandler.class, () -> new ThrowingTestQueryHandler() );
     testProvider.registerQueryHandler(TestQueryHandler.class, () -> new TestQueryHandler());
     return testProvider;
   }
