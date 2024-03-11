@@ -14,7 +14,13 @@ class CommandDispatcher {
     if (optionalHandler.isEmpty())
       return CommandResponse.failed("no handler registered");
     CommandHandler handler = optionalHandler.get();
-    return handler.handle(command);
+    try {
+      CommandResponse response = handler.handle(command);
+      return response;
+    }
+    catch(Exception e){
+      return CommandResponse.failed(e.toString());
+    }
   }
 }
 

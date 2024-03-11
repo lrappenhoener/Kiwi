@@ -56,6 +56,7 @@ public class CommandDispatchTests {
     assertTrue(response.isSuccessful());
     assertTrue(response.getMessage().contains("Successful"));
   }
+
   @Test
   void async_dispatching_command_with_registered_handler_instance_returns_successful_response() {
     TestCommandHandler handler = new TestCommandHandler(c -> {
@@ -75,6 +76,7 @@ public class CommandDispatchTests {
       assertFalse(future.isCompletedExceptionally());
     }
   }
+
   @Test
   void dispatching_command_with_registered_handler_class_returns_successful_response() {
     TestProvider testProvider = TestProvider.create();
@@ -88,6 +90,7 @@ public class CommandDispatchTests {
     assertTrue(response.isSuccessful());
     assertTrue(response.getMessage().contains("Successful"));
   }
+
   @Test
   void async_dispatching_command_with_registered_handler_class_returns_successful_response() {
     TestProvider testProvider = TestProvider.create();
@@ -106,6 +109,7 @@ public class CommandDispatchTests {
       assertFalse(future.isCompletedExceptionally());
     }
   }
+
   @Test
   void dispatching_command_with_registered_handler_class_successful_invokes_handler() {
     AtomicBoolean invoked = new AtomicBoolean(false);
@@ -182,5 +186,24 @@ public class CommandDispatchTests {
     }
 
     assertTrue(invoked.get());
+  }
+
+  @Test
+  void async_dispatching_command_with_throwing_handler_instance_returns_failed_response() {
+    TestCommandHandler handler = new TestCommandHandler(c -> {
+      throw new RuntimeException();
+    });
+    DispatcherBuilder dispatcherBuilder = DispatcherBuilder.create();
+    dispatcherBuilder.registerCommandHandler(handler);
+    Dispatcher dispatcher = dispatcherBuilder.build();
+    TestCommand command = new TestCommand(42);
+
+    CompletableFuture<CommandResponse> future = dispatcher.sendAsync(command);
+    try {
+      CommandResponse response = future.get();
+      assertFalse(response.isSuccessful());
+    } catch (InterruptedException | ExecutionException e) {
+      assertFalse(future.isCompletedExceptionally());
+    }
   }
 }
