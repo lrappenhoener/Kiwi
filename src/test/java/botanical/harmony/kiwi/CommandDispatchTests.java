@@ -207,6 +207,7 @@ public class CommandDispatchTests {
       assertFalse(future.isCompletedExceptionally());
     }
   }
+
   @Test
   void dispatching_command_with_throwing_handler_instance_returns_failed_response() {
     TestCommandHandler handler = new TestCommandHandler(c -> {
@@ -221,6 +222,7 @@ public class CommandDispatchTests {
 
     assertFalse(response.isSuccessful());
   }
+
   @Test
   void async_dispatching_command_with_throwing_handler_class_returns_failed_response() {
     TestProvider testProvider = TestProvider.create();
@@ -237,6 +239,7 @@ public class CommandDispatchTests {
       assertFalse(future.isCompletedExceptionally());
     }
   }
+
   @Test
   void dispatching_command_with_throwing_handler_class_returns_failed_response() {
     TestProvider testProvider = TestProvider.create();
