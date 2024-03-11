@@ -1,6 +1,8 @@
 package botanical.harmony.kiwi;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class Dispatcher {
   private final CommandDispatcher commandDispatcher;
@@ -28,5 +30,13 @@ public class Dispatcher {
 
   public <T> QueryResponse<T> send(Query<T> query) {
     return queryDispatcher.send(query);
+  }
+
+  public CompletableFuture<QueryResponse<List<String>>> sendAsync(Query<List<String>> query) {
+    return CompletableFuture.supplyAsync(() -> send(query));
+  }
+
+  public CompletableFuture<CommandResponse> sendAsync(Command command) {
+    return CompletableFuture.supplyAsync(() -> send(command));
   }
 }
