@@ -2,7 +2,8 @@
 The **Kiwi Command Dispatcher** is a Java library designed for personal use and learning purposes, inspired by the Brighter
  command dispatcher in C#. It aims to provide a straightforward and efficient way to manage command dispatching in Java
  applications, viable tool for implementing Ports and Adapters and CQRS.
-Key Features:
+ 
+**Key Features:**
 - **Easy to Use**: Kiwi is designed with simplicity in mind, offering a minimalistic API that is easy to understand and
  integrate into your projects.
 - **Learning Focus**: Developed with educational purposes in mind, Kiwi serves as an excellent tool for developers looking to
